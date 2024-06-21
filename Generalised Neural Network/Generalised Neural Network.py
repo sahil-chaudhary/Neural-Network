@@ -157,35 +157,40 @@ class accuracy:
 
 class Generalised_Neural_Network:
     #Ofcourse, the main class that will take care of the neural network. This is the class where we will call the above classes to train the model and make predictions.
-    def __init__(self, x, y, parameters, learning_rate, epochs):
+    # This should also take care of number of layers and nodes in each layer
+    def __init__(self, x, y, parameters, learning_rate, epochs, nodes_num, layers_num, activation_functions, optimisation_algorithm, error_function):
         self.x = x
         self.y = y
         self.parameters = parameters
         self.learning_rate = learning_rate
         self.epochs = epochs
+        self.nodes_num = nodes_num
+        self.layers_num = layers_num
+        self.activation_functions = activation_functions
+        self.optimisation_algorithm = optimisation_algorithm
+        self.error_function = error_function
 
     def train(self, x, y, parameters, learning_rate, epochs):
-        pass
-
-    def predict(self, x, parameters):
-        pass
-
-    def evaluate(self, y_pred, y_true):
-        pass
-
-    def plot(self, loss, accuracy):
         pass
 
     def save(self, path):
         pass
 
-    def load(self, path):
+
+class init:
+    #This class will take care of the initialisation of the weights and biases of the neural network.
+    def __init__(self, x, nodes_num, layers_num):
+        self.x = x
+        self.nodes_num = nodes_num
+        self.layers_num = layers_num
+        
+    def random(self, x, nodes_num, layers_num):
         pass
-
-    def summary(self):
-        pass
-
-
 
     
+
+    
+
+
+
 
