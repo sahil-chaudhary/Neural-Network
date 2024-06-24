@@ -180,9 +180,11 @@ class Generalised_Neural_Network:
         self.a = a
         self.z = z
 
-    def update_parameters(self, x, y, weights, biases, a, z, nodes_num, layers_num, activations, learning_rate):
+    def update_parameters(self, x, y, weights, biases, a, z, nodes_num, layers_num, activations):
         for i in range(layers_num+1):
-            a['a_'+str(i)] = forward_Prop.linear(z['z_'+str(i)], weights['w_'+str(i)], biases['b_'+str(i)])
+            forward_Prop1 = forward_Prop(x, y, biases['b_'+str(i)])
+            a['a_'+str(i)] = forward_Prop1.linear(z['z_'+str(i)], weights['w_'+str(i)], biases['b_'+str(i)])
+            activation = activation(a['a_'+str(i)])
             if activations[i] == 'sigmoid':
                 z['z_'+str(i+1)] = activation.sigmoid(a['a_'+str(i)])
             elif activations[i] == 'relu':
@@ -198,11 +200,13 @@ class Generalised_Neural_Network:
         loss = []
         accuracy = []
         for i in range(epochs):
-            a, z = Generalised_Neural_Network.update_parameters(x, y, weights, biases, a, z, nodes_num, layers_num, activations, learning_rate)
+            a, z = self.update_parameters(x, y, weights, biases, a, z, nodes_num, layers_num, activations)
+            error = error()
             loss.append(error.cross_entropy_error(z['z_'+str(layers_num+1)], y))
             print('Epoch:', i, 'Loss:', loss[-1])
             accuracy.append(accuracy.accuracy(predict.predict(z['z_'+str(layers_num+1)]), y))
             print('Accuracy:', accuracy[-1])
+            back_Prop = back_Prop(x, y, biases['b_'+str(i)])
             dz = back_Prop.activation_backward(z['z_'+str(layers_num+1)] - y, a['a_'+str(layers_num)], activations[layers_num])
             for i in range(layers_num, -1, -1):
                 dx, dw, db = back_Prop.linear_backward(dz, z['z_'+str(i)], weights['w_'+str(i)], biases['b_'+str(i)])
