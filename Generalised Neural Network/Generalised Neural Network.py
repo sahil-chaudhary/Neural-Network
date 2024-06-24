@@ -216,10 +216,11 @@ class Generalised_Neural_Network:
         return weights, biases, loss, accuracy
     
 class parameter_initialisation:
-    def __init__(self, nodes_num, layers_num, x, y):
+    def __init__(self, x, y, nodes_num, layers_num):
         self.nodes_num = nodes_num
         self.layers_num = layers_num
         self.x = x
+        self.y = y
 
     #The idea is to create 'n+2' layers with 'd' nodes in each layer. For this, w_0 \in R^{m x d}[## I am expecting the input to be m x 1] and b_0 \in R^{d x 1} and w_1 \in R^{d x d} and b_1 \in R^{d x 1} and so on till w_{n} \in R^{d x d} and b_{n} \in R^{d x 1} and w_{n+1} \in R^{d x k} and b_{n+1} \in R^{k x 1} where k is the number of classes in the classification problem
 
@@ -270,44 +271,31 @@ class parameter_initialisation:
         activations.append('softmax')
         print('done with activations initialisation')
         return activations
+        
+    def dz_initialisation(x, y, nodes_num, layers_num):
+        dz = {}
+        for i in range(layers_num+1):
+            print('Layer:', i)
+            dz['dz_'+str(i)] = np.zeros((x.shape[0], nodes_num))
+        print('done with dz initialisation')
+        return dz
+
+    def da_initialisation(x, y, nodes_num, layers_num):
+        da = {}
+        for i in range(layers_num+1):
+            print('Layer:', i)
+            da['da_'+str(i)] = np.zeros((x.shape[0], nodes_num))
+        print('done with da initialisation')
+        return da
+
+    def dw_initialisation(x, y, nodes_num, layers_num):
+        dw = {}
+        for i in range(layers_num+1):
+            print('Layer:', i)
+            dw['dw_'+str(i)] = np.zeros((x.shape[1], nodes_num))
+        print('done with dw initialisation')
+        return dw
     
-
-#Get the MNIST DATASET
-from sklearn.datasets import fetch_openml
-mnist = fetch_openml('mnist_784', version=1)
-x, y = mnist['data'], mnist['target']
-x = x/255
-y = np.array(y, dtype='int')
-y = np.eye(10)[y]
-x_train, x_test, y_train, y_test = x[:60000], x[60000:], y[:60000], y[60000:]
-
-#Initialise the parameters
-nodes_num = 10
-layers_num = 2
-learning_rate = 0.01
-epochs = 100
-parameter_initialisation = parameter_initialisation(nodes_num, layers_num, x_train, y_train)
-weights, biases = parameter_initialisation.weights_and_biases_initialisation(x_train, y_train, nodes_num, layers_num)
-a = parameter_initialisation.layer_forward_linear_initialisation(x_train, y_train, nodes_num, layers_num)
-z = parameter_initialisation.activation_initialisation(x_train, y_train, nodes_num, layers_num)
-activations = parameter_initialisation.activations_initialisation(x_train, y_train, nodes_num, layers_num)
-
-
-#Train the model
-generalised_neural_network = Generalised_Neural_Network(x_train, y_train, learning_rate, epochs, nodes_num, layers_num, activations, optimiser, error, weights, biases, a, z)
-weights, biases, loss, accuracy1 = generalised_neural_network.train(x_train, y_train, weights, biases, a, z, nodes_num, layers_num, activations, learning_rate, epochs)
-
-#Plot the loss and accuracy
-plot = plot(x_train, y_train, weights)
-plot.plot_loss(loss)
-plot.plot_accuracy(accuracy1)
-plot.plot(loss, accuracy1)
-
-#Make predictions
-predict = predict(x_test, weights)
-y_pred = predict.predict(x_test)
-accuracy2 = accuracy(y_pred, y_test)
-print('Accuracy:', accuracy2)
 
 
     
