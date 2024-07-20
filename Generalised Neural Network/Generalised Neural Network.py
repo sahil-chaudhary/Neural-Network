@@ -196,24 +196,7 @@ class Generalised_Neural_Network:
         print('done with update parameters')
         return a, z
     
-    def train(self, x, y, weights, biases, a, z, nodes_num, layers_num, activations, learning_rate, epochs):
-        loss = []
-        accuracy = []
-        for i in range(epochs):
-            a, z = self.update_parameters(x, y, weights, biases, a, z, nodes_num, layers_num, activations)
-            error = error()
-            loss.append(error.cross_entropy_error(z['z_'+str(layers_num+1)], y))
-            print('Epoch:', i, 'Loss:', loss[-1])
-            accuracy.append(accuracy.accuracy(predict.predict(z['z_'+str(layers_num+1)]), y))
-            print('Accuracy:', accuracy[-1])
-            back_Prop = back_Prop(x, y, biases['b_'+str(i)])
-            dz = back_Prop.activation_backward(z['z_'+str(layers_num+1)] - y, a['a_'+str(layers_num)], activations[layers_num])
-            for i in range(layers_num, -1, -1):
-                dx, dw, db = back_Prop.linear_backward(dz, z['z_'+str(i)], weights['w_'+str(i)], biases['b_'+str(i)])
-                weights['w_'+str(i)] -= learning_rate*dw
-                biases['b_'+str(i)] -= learning_rate*db
-                dz = back_Prop.activation_backward(dx, a['a_'+str(i)], activations[i])
-        return weights, biases, loss, accuracy
+
     
 class parameter_initialisation:
     def __init__(self, x, y, nodes_num, layers_num):
